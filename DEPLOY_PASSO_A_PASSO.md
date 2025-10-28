@@ -80,11 +80,13 @@ git push -u origin main
 Na tela de configuração:
 
 **Build command:**
+
 ```
 pnpm install && pnpm run build:frontend
 ```
 
 **Publish directory:**
+
 ```
 dist/public
 ```
@@ -109,18 +111,18 @@ Clique em **Show advanced** → **New variable** para adicionar variáveis de am
 
 No Netlify, adicione as variáveis uma por uma:
 
-| Key (Nome) | Value (Valor) | Onde Pegar |
-|------------|---------------|------------|
-| `VITE_SUPABASE_URL` | `https://xxx.supabase.co` | Supabase → API → Project URL |
-| `VITE_SUPABASE_ANON_KEY` | `eyJhbGc...` | Supabase → API → anon/public |
+| Key (Nome)               | Value (Valor)             | Onde Pegar                   |
+| ------------------------ | ------------------------- | ---------------------------- |
+| `VITE_SUPABASE_URL`      | `https://xxx.supabase.co` | Supabase → API → Project URL |
+| `VITE_SUPABASE_ANON_KEY` | `eyJhbGc...`              | Supabase → API → anon/public |
 
 **Variáveis de Contato (Opcionais mas Recomendadas):**
 
-| Key | Value |
-|-----|-------|
-| `VITE_CONTACT_EMAIL` | `matheusauerswald@gmail.com` |
-| `VITE_CONTACT_PHONE` | `67981826022` |
-| `VITE_CONTACT_LOCATION` | `Campo Grande, MS` |
+| Key                     | Value                        |
+| ----------------------- | ---------------------------- |
+| `VITE_CONTACT_EMAIL`    | `matheusauerswald@gmail.com` |
+| `VITE_CONTACT_PHONE`    | `67981826022`                |
+| `VITE_CONTACT_LOCATION` | `Campo Grande, MS`           |
 
 ✅ **Pronto!** Variáveis configuradas.
 
@@ -164,6 +166,7 @@ https://random-name-123abc.netlify.app
 ### 5.1 Comprar Domínio
 
 Opções populares:
+
 - [Registro.br](https://registro.br) - R$ 40/ano (.com.br)
 - [Namecheap](https://namecheap.com) - ~$10/ano (.com)
 - [GoDaddy](https://godaddy.com)
@@ -187,6 +190,7 @@ dns4.p01.nsone.net
 ### 5.3 Configurar DNS
 
 No seu provedor de domínio:
+
 1. Vá em configurações de DNS/Nameservers
 2. Substitua os nameservers pelos do Netlify
 3. Aguarde propagação (até 24h, geralmente 1-2h)
@@ -234,6 +238,7 @@ Abra seu site e teste:
 **Problema**: Arquivo `_redirects` não foi incluído no build
 
 **Solução**:
+
 ```bash
 # Verifique se existe
 ls client/public/_redirects
@@ -253,6 +258,7 @@ O Netlify vai fazer redeploy automaticamente.
 **Problema**: Variáveis de ambiente não configuradas
 
 **Solução**:
+
 1. Netlify → Site settings → Environment variables
 2. Verifique `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY`
 3. Redeploy: Deploys → Trigger deploy → Deploy site
@@ -264,6 +270,7 @@ O Netlify vai fazer redeploy automaticamente.
 **Problema**: Erro de build ou JavaScript
 
 **Solução**:
+
 1. Veja os logs: Deploys → [último deploy] → Deploy log
 2. Teste localmente:
    ```bash
@@ -279,7 +286,7 @@ Seu portfólio está **AO VIVO** na internet! 🌐
 
 ### 📊 Próximos Passos Sugeridos
 
-1. **SEO**: 
+1. **SEO**:
    - Adicione meta tags no `client/index.html`
    - Submeta ao Google Search Console
    - Crie sitemap.xml
@@ -316,4 +323,3 @@ Seu portfólio está **AO VIVO** na internet! 🌐
 
 Desenvolvido por **Matheus Auerswald** 💻
 Campo Grande, MS | matheusauerswald@gmail.com
-
