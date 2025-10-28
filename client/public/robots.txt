@@ -1,0 +1,28 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://matheusauerswald.com/sitemap.xml
+
+# Block access to admin routes
+User-agent: *
+Disallow: /admin
+Disallow: /api
+
+# Crawl delay for bots
+Crawl-delay: 0
+
+# Allow Google Image Bot
+User-agent: Googlebot-Image
+Allow: /
+
+# Block bad bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+

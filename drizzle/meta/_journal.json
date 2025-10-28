@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1761078964901,
+      "tag": "0000_public_star_brand",
+      "breakpoints": true
+    }
+  ]
+}
