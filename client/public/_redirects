@@ -1,0 +1,9 @@
+# Redirecionamentos do Netlify
+# Este arquivo garante que o roteamento do React funcione corretamente
+
+# API endpoints (se usar Netlify Functions)
+/api/*  /.netlify/functions/:splat  200
+
+# Redirecionar todas as rotas para o index.html (SPA)
+/*  /index.html  200
+
