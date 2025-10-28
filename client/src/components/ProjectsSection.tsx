@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useState } from "react";
+import { useIsMobile } from "@/hooks/useMobile";
 import {
   usePortfolioProjects,
   type PortfolioProject,
@@ -91,6 +92,7 @@ function ProjectCard({
   project: (typeof defaultProjects)[0];
   index: number;
 }) {
+  const isMobile = useIsMobile();
   const [isHovered, setIsHovered] = useState(false);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -99,6 +101,7 @@ function ProjectCard({
   const rotateY = useTransform(mouseX, [-100, 100], [-10, 10]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (isMobile) return; // Desabilitar em mobile
     const rect = e.currentTarget.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
@@ -114,24 +117,28 @@ function ProjectCard({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 50 }}
+      initial={{ opacity: 0, y: isMobile ? 20 : 50 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
+      viewport={{ once: true, margin: "-50px" }}
       transition={{
-        delay: index * 0.1,
-        duration: 0.6,
+        delay: isMobile ? 0 : index * 0.1,
+        duration: isMobile ? 0.4 : 0.6,
         ease: [0.16, 1, 0.3, 1],
       }}
-      style={{
-        rotateX,
-        rotateY,
-        transformStyle: "preserve-3d",
-      }}
+      style={
+        isMobile
+          ? {} // Sem efeitos 3D em mobile
+          : {
+              rotateX,
+              rotateY,
+              transformStyle: "preserve-3d",
+            }
+      }
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleMouseLeave}
       className="group relative"
-      whileHover={{ scale: 1.02 }}
+      whileHover={isMobile ? {} : { scale: 1.02 }}
     >
       {/* Card Container */}
       <motion.div
@@ -146,42 +153,50 @@ function ProjectCard({
         <div className="relative h-48 flex-shrink-0 overflow-hidden bg-gradient-to-br from-white/5 to-white/0 rounded-t-xl">
           {project.image.match(/\.(mp4|webm|mov)$/i) ? (
             <video
-              src={project.image}
               autoPlay
               loop
               muted
               playsInline
-              preload="metadata"
-              crossOrigin="anonymous"
+              preload="auto"
               className="w-full h-full object-cover"
-            />
+              style={{ zIndex: 1 }}
+            >
+              <source src={project.image} type="video/mp4" />
+              <source src={project.image} type="video/webm" />
+              Seu navegador não suporta vídeos.
+            </video>
           ) : (
             <motion.img
               src={project.image}
               alt={project.title}
               className="w-full h-full object-cover"
-              animate={{
-                scale: isHovered ? 1.15 : 1,
-              }}
+              style={{ zIndex: 1 }}
+              animate={
+                isMobile
+                  ? {} // Sem zoom em mobile
+                  : { scale: isHovered ? 1.15 : 1 }
+              }
               transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             />
           )}
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"
-            animate={{
-              opacity: isHovered ? 1 : 0,
-            }}
-            transition={{ duration: 0.3 }}
-          />
 
-          {/* Gradient Overlay */}
-          <motion.div
-            className={`absolute inset-0 bg-gradient-to-br ${project.color}`}
-            animate={{
-              opacity: isHovered ? 0.2 : 0,
-            }}
-            transition={{ duration: 0.3 }}
-          />
+          {/* Overlays apenas em desktop */}
+          {!isMobile && (
+            <>
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"
+                style={{ zIndex: 2 }}
+                animate={{ opacity: isHovered ? 1 : 0 }}
+                transition={{ duration: 0.3 }}
+              />
+              <motion.div
+                className={`absolute inset-0 bg-gradient-to-br ${project.color}`}
+                style={{ zIndex: 2 }}
+                animate={{ opacity: isHovered ? 0.2 : 0 }}
+                transition={{ duration: 0.3 }}
+              />
+            </>
+          )}
         </div>
 
         {/* Content */}
@@ -284,14 +299,16 @@ function ProjectCard({
           </div>
         </div>
 
-        {/* Hover Border Glow */}
-        <motion.div
-          className={`absolute inset-0 border border-transparent rounded-xl bg-gradient-to-br ${project.color} pointer-events-none`}
-          animate={{
-            opacity: isHovered ? 0.2 : 0,
-          }}
-          transition={{ duration: 0.3 }}
-        />
+        {/* Hover Border Glow - apenas desktop */}
+        {!isMobile && (
+          <motion.div
+            className={`absolute inset-0 border border-transparent rounded-xl bg-gradient-to-br ${project.color} pointer-events-none`}
+            animate={{
+              opacity: isHovered ? 0.2 : 0,
+            }}
+            transition={{ duration: 0.3 }}
+          />
+        )}
       </motion.div>
     </motion.div>
   );

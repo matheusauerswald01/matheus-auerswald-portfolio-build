@@ -552,3 +552,105 @@
 ::-webkit-scrollbar-thumb:hover {
   background: oklch(0.45 0.05 280);
 }
+
+/* ================================================
+   OTIMIZAÇÕES DE PERFORMANCE PARA MOBILE
+   ================================================ */
+
+/* Reduzir complexidade de animações em mobile */
+@media (max-width: 768px) {
+  /* Reduzir duração de animações */
+  body.reduce-motion * {
+    animation-duration: 0.3s !important;
+    transition-duration: 0.3s !important;
+  }
+
+  /* Desabilitar blur pesado em mobile - GPU intensive */
+  .blur-3xl {
+    filter: blur(40px) !important;
+  }
+
+  /* Otimizar transformações com GPU acceleration */
+  * {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+
+  /* Reduzir animações de gradient */
+  .animate-gradient-shift {
+    animation-duration: 12s !important; /* Mais lento = menos processamento */
+  }
+
+  /* Desabilitar animações de rotação pesadas */
+  .animate-rotate-slow {
+    animation: none !important;
+  }
+
+  /* Simplificar animações de float */
+  .animate-float,
+  .animate-float-slow {
+    animation-duration: 10s !important;
+  }
+}
+
+/* GPU acceleration para elementos animados */
+.glass-effect,
+.gradient-text,
+.gradient-border,
+.glow-effect,
+[class*="motion-"],
+[class*="animate-"] {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: auto; /* Evitar uso excessivo de will-change */
+}
+
+/* Otimizar scroll em mobile */
+@media (max-width: 768px) {
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Melhorar feedback visual de tap */
+  * {
+    -webkit-tap-highlight-color: rgba(168, 85, 247, 0.15);
+    tap-highlight-color: rgba(168, 85, 247, 0.15);
+  }
+
+  /* Remover hover effects em touch devices */
+  .hover-lift:hover,
+  .hover-glow:hover,
+  .hover-scale-105:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* Reduzir complexidade de backgrounds */
+  .glass-effect {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+  }
+}
+
+/* Preferências de movimento reduzido do sistema */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Otimizações para dispositivos de baixa potência */
+@media (max-width: 768px) and (max-height: 600px) {
+  /* Dispositivos muito pequenos - desabilitar animações pesadas */
+  .animate-glow-pulse,
+  .animate-glow-ring,
+  .animate-shimmer {
+    animation: none !important;
+  }
+}

@@ -3,11 +3,16 @@ import { ArrowRight, Code, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { trackCTAClick, trackWhatsAppClick } from "@/hooks/useMetaPixel";
+import { useIsMobile } from "@/hooks/useMobile";
 
 export default function HeroSection() {
+  const isMobile = useIsMobile();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
+    // Desabilitar mouse tracking em mobile para melhor performance
+    if (isMobile) return;
+
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({
         x: (e.clientX / window.innerWidth - 0.5) * 20,
@@ -16,7 +21,7 @@ export default function HeroSection() {
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
+  }, [isMobile]);
 
   return (
     <section
@@ -27,49 +32,69 @@ export default function HeroSection() {
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
           className="absolute top-20 left-10 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl"
-          animate={{
-            x: mousePosition.x * 2,
-            y: mousePosition.y * 2,
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            x: { type: "spring", stiffness: 50 },
-            y: { type: "spring", stiffness: 50 },
-            scale: { duration: 8, repeat: Infinity, ease: "easeInOut" },
-          }}
+          animate={
+            isMobile
+              ? { scale: [1, 1.1, 1] } // Animação simplificada para mobile
+              : {
+                  x: mousePosition.x * 2,
+                  y: mousePosition.y * 2,
+                  scale: [1, 1.2, 1],
+                }
+          }
+          transition={
+            isMobile
+              ? { duration: 8, repeat: Infinity, ease: "easeInOut" }
+              : {
+                  x: { type: "spring", stiffness: 50 },
+                  y: { type: "spring", stiffness: 50 },
+                  scale: { duration: 8, repeat: Infinity, ease: "easeInOut" },
+                }
+          }
         />
         <motion.div
           className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl"
-          animate={{
-            x: -mousePosition.x * 1.5,
-            y: -mousePosition.y * 1.5,
-            scale: [1, 1.3, 1],
-          }}
-          transition={{
-            x: { type: "spring", stiffness: 50 },
-            y: { type: "spring", stiffness: 50 },
-            scale: {
-              duration: 10,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 1,
-            },
-          }}
-        />
-        <motion.div
-          className="absolute top-1/2 left-1/2 w-[600px] h-[600px] bg-pink-500/10 rounded-full blur-3xl"
-          animate={{
-            rotate: 360,
-            scale: [1, 1.1, 1],
-          }}
-          transition={{
-            rotate: { duration: 30, repeat: Infinity, ease: "linear" },
-            scale: { duration: 6, repeat: Infinity, ease: "easeInOut" },
-          }}
+          animate={
+            isMobile
+              ? { scale: [1, 1.15, 1] }
+              : {
+                  x: -mousePosition.x * 1.5,
+                  y: -mousePosition.y * 1.5,
+                  scale: [1, 1.3, 1],
+                }
+          }
+          transition={
+            isMobile
+              ? { duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }
+              : {
+                  x: { type: "spring", stiffness: 50 },
+                  y: { type: "spring", stiffness: 50 },
+                  scale: {
+                    duration: 10,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 1,
+                  },
+                }
+          }
         />
 
-        {/* Floating particles */}
-        {[...Array(15)].map((_, i) => (
+        {/* Apenas em desktop - rotação pesada */}
+        {!isMobile && (
+          <motion.div
+            className="absolute top-1/2 left-1/2 w-[600px] h-[600px] bg-pink-500/10 rounded-full blur-3xl"
+            animate={{
+              rotate: 360,
+              scale: [1, 1.1, 1],
+            }}
+            transition={{
+              rotate: { duration: 30, repeat: Infinity, ease: "linear" },
+              scale: { duration: 6, repeat: Infinity, ease: "easeInOut" },
+            }}
+          />
+        )}
+
+        {/* Floating particles - reduzido em mobile */}
+        {[...Array(isMobile ? 5 : 15)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute w-1 h-1 bg-blue-400/40 rounded-full"
@@ -266,16 +291,20 @@ export default function HeroSection() {
         {/* Right Column - Visual */}
         <motion.div
           className="relative h-96 md:h-full min-h-96"
-          initial={{ opacity: 0, x: 50 }}
+          initial={{ opacity: 0, x: isMobile ? 0 : 50 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          transition={{
+            duration: isMobile ? 0.5 : 0.8,
+            ease: [0.16, 1, 0.3, 1],
+          }}
         >
           <motion.div
             className="absolute inset-0 bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-2xl blur-3xl"
-            animate={{
-              scale: [1, 1.1, 1],
-              rotate: [0, 5, -5, 0],
-            }}
+            animate={
+              isMobile
+                ? { scale: [1, 1.05, 1] } // Animação mais suave em mobile
+                : { scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }
+            }
             transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
           />
 
@@ -283,28 +312,34 @@ export default function HeroSection() {
           <div className="relative h-full flex items-center justify-center">
             <motion.div
               className="glass-effect p-6 rounded-xl max-w-sm w-full relative overflow-hidden"
-              whileHover={{ scale: 1.02 }}
-              animate={{
-                boxShadow: [
-                  "0 0 20px rgba(168, 85, 247, 0.3)",
-                  "0 0 40px rgba(168, 85, 247, 0.5)",
-                  "0 0 20px rgba(168, 85, 247, 0.3)",
-                ],
-              }}
+              whileHover={isMobile ? {} : { scale: 1.02 }}
+              animate={
+                isMobile
+                  ? {} // Sem animação de shadow em mobile
+                  : {
+                      boxShadow: [
+                        "0 0 20px rgba(168, 85, 247, 0.3)",
+                        "0 0 40px rgba(168, 85, 247, 0.5)",
+                        "0 0 20px rgba(168, 85, 247, 0.3)",
+                      ],
+                    }
+              }
               transition={{ duration: 3, repeat: Infinity }}
             >
-              {/* Animated border */}
-              <motion.div
-                className="absolute inset-0 rounded-xl"
-                style={{
-                  background:
-                    "linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.5), transparent)",
-                }}
-                animate={{
-                  x: ["-200%", "200%"],
-                }}
-                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-              />
+              {/* Animated border - apenas em desktop */}
+              {!isMobile && (
+                <motion.div
+                  className="absolute inset-0 rounded-xl"
+                  style={{
+                    background:
+                      "linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.5), transparent)",
+                  }}
+                  animate={{
+                    x: ["-200%", "200%"],
+                  }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                />
+              )}
 
               <div className="relative space-y-4">
                 <motion.div
